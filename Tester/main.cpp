@@ -5,7 +5,9 @@
 
 int main(void)
 {
-	sf::RenderWindow window(sf::VideoMode({800,600}), "Title");
+	// Obtaining dimensions of the desktop
+	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+	sf::RenderWindow window(desktop, "Momo Rush");
 	loadAllSprites(window);
 	while (window.isOpen())
 	{

@@ -6,9 +6,9 @@
 
 extern sf::Texture backgroundTextures[3];
 extern sf::Sprite backgroundSprites[3];
-extern int spriteCt;
+extern int backgroundSpriteCt;
 
-void setBackgroundSprites(sf::RenderWindow& window);
+void loadBackgroundSprites(sf::RenderWindow& window);
 void loadAllSprites(sf::RenderWindow& window);
 
 #endif

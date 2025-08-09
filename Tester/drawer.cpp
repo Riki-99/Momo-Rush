@@ -2,7 +2,7 @@
 
 void drawBackGroundSprites(sf::RenderWindow& window)
 {
-	for (int i = 0; i < spriteCt; i++)
+	for (int i = 0; i < backgroundSpriteCt; i++)
 	{
 		// Drawing the sprites
 		window.draw(backgroundSprites[i]);
