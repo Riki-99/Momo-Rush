@@ -4,11 +4,11 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 
-class Resource{
-public:
-	std::string location;
-	sf::Sprite sprite;
-	Resource(std::string& l, sf::Vector2u& sc, sf::Sprite& sp) : location(l), scale(sc), sprite(sp) {};
-};
+extern sf::Texture backgroundTextures[3];
+extern sf::Sprite backgroundSprites[3];
+extern int spriteCt;
+
+void setBackgroundSprites(sf::RenderWindow& window);
+void loadAllSprites(sf::RenderWindow& window);
 
 #endif
