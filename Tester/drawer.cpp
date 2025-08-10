@@ -22,10 +22,9 @@ void drawMap(sf::RenderWindow& window)
 		for (int j = 0; j < map.cols; j++)
 		{
 			// Drawing the sprites as per the value stored in the map indices.
-			int currentIdx = map.indices[i][j];
+			map.tile[i][j].blueprint.sprite.setPosition({ tileSize * j, tileSize * i });
 			// Upadting the position of 
-			tileSet[currentIdx].sprite.setPosition({ tileSize * j, tileSize * i});
-			window.draw(tileSet[currentIdx].sprite);
+			window.draw(map.tile[i][j].blueprint.sprite);
 		}
 		std::cout << std::endl;
 	}

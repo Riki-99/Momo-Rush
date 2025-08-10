@@ -1,7 +1,8 @@
 #include "loader.h"
 #include <vector>
 
-int spriteSize = 56;
+// Dimensions of each sprite in the player spritesheet
+int playerSpriteSize = 56;
 sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
 int desktop_width = desktop.size.x;
 int desktop_height = desktop.size.y;
@@ -10,15 +11,16 @@ float tileSize = (desktop_height / 10);
 
 // The map
 Map map;
+Player player;
 
 sf::Texture tileTexture("./Assets/oak-resources/oak_woods_tileset.png");
 sf::Texture transprt("./Assets/oak-resources/oak_woods_tileset.png", false, sf::IntRect({ TileSprites::dim * 4, 0 }, { TileSprites::dim, TileSprites::dim }));
-std::vector <Tile> tileSet = {
-Tile(tileTexture, 4, 0, 1, 1, true),
-Tile(tileTexture, 10, 0, 1, 1, false),
-Tile(tileTexture, 12, 0, 1, 1, false),
-Tile(tileTexture, 15, 0, 1, 1, false),
-Tile(tileTexture, 0, 11, 1, 1, false)
+std::vector <TileFramework> tileSet = {
+TileFramework(tileTexture, 4, 0, 1, 1, true),
+TileFramework(tileTexture, 10, 0, 1, 1, false),
+TileFramework(tileTexture, 12, 0, 1, 1, false),
+TileFramework(tileTexture, 15, 0, 1, 1, false),
+TileFramework(tileTexture, 0, 11, 1, 1, false)
 };
 
 // Textures are loaded
@@ -64,11 +66,26 @@ sf::Sprite enemySprite(enemyTexture);
 
 
 void loadCharacters(){
-	playerSprite.setTextureRect(sf::IntRect({0*spriteSize, 0*spriteSize}, {spriteSize, spriteSize}));
-	playerSprite.setScale({2,2});
-	enemySprite.setTextureRect(sf::IntRect({0*spriteSize, 0*spriteSize}, {spriteSize, spriteSize}));
-	enemySprite.setScale({ 2,2 });
-    enemySprite.setPosition(sf::Vector2f(4 * spriteSize, 4 * spriteSize));
+
+	playerSprite.setTextureRect(sf::IntRect({0*playerSpriteSize, 0*playerSpriteSize}, {playerSpriteSize, playerSpriteSize}));
+	enemySprite.setTextureRect(sf::IntRect({0*playerSpriteSize, 0*playerSpriteSize}, {playerSpriteSize, playerSpriteSize}));
+
+	// Obtaining default size of the characters
+	sf::FloatRect bounds = enemySprite.getLocalBounds();
+	float height = bounds.size.x;
+	float width = bounds.size.y;
+
+	// Setting uniform scale
+	enemySprite.setScale({ tileSize / width, tileSize / height });
+
+	playerSprite.setScale({ tileSize / width, tileSize / height });
+	float playerX = tileSize * 4, playerY = tileSize * 0;
+	player = Player(10, {0,0}, playerSprite);
+
+	float enemyX = tileSize * 4, enemyY = tileSize * 0;
+
+    playerSprite.setPosition(player.sprite.getPosition());
+    enemySprite.setPosition(sf::Vector2f(4 * playerSpriteSize, 4 * playerSpriteSize));
 }
 
 
