@@ -18,27 +18,18 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="file2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="loader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="drawer.cpp">
+    <ClCompile Include="global.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="events.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="global.h">
+      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="loader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="drawer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="events.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -131,15 +131,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="drawer.cpp" />
-    <ClCompile Include="events.cpp" />
-    <ClCompile Include="file2.cpp" />
+    <ClCompile Include="global.h" />
+    <ClCompile Include="global.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="loader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="drawer.h" />
-    <ClInclude Include="events.h" />
     <ClInclude Include="loader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

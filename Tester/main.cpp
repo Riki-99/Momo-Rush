@@ -1,14 +1,13 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "loader.h"
-#include "drawer.h"
+#include "global.h"
 
 int main(void)
 {
 	// Obtaining dimensions of the desktop
 	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
 	sf::RenderWindow window(desktop, "Momo Rush");
-	loadAllSprites(window);
 	while (window.isOpen())
 	{
 		while (std::optional event = window.pollEvent())
@@ -23,7 +22,15 @@ int main(void)
 			window.clear(sf::Color(0, 0, 0));
 
 			// Drawing code goes here
-			drawAllSprites(window);
+			loadAllTextures();
+			Background b1(0);
+			Background b2(1);
+			Background b3(2);
+			b1.draw(window);
+			b2.draw(window);
+			b3.draw(window);
+			Player p(0, 0, 0, 1, 1, 56);
+			p.draw(window);
 			window.display();
 		}
 
