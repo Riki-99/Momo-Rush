@@ -65,7 +65,16 @@ public:
     }
 };
 
-class Player : public Element {
+
+class Entity : virtual public Element {
+    int health;
+    vec2f velocity;
+    const int timeUnit = 1;
+public:
+    virtual void update() = 0;
+};
+
+class Player : public Entity{
 private:
     int health;
     vec2f velocity;
@@ -108,7 +117,6 @@ class Map
 {
      const int rows = 10;
      const int cols = 100;
-     int actualColCt;
      // a 2d vector for configuring all the tiles 
      std::vector < std::vector<Tile>> tiles;
 
