@@ -4,7 +4,9 @@
 extern sf::VideoMode desktop;
 
 struct GlobalData {
-	static int tilesize;
+	static float tilesize;
+	static const int horizontalTiles = 16;
+	static const int verticalTiles = 10;
 };
 typedef sf::RenderWindow rw;
 typedef sf::Sprite Sprt;

@@ -31,6 +31,8 @@ int main(void)
 			b3.draw(window);
 			Player p(0, 0, 0, 1, 1, 56);
 			p.draw(window);
+			Map m1("./Assets/map1.txt");
+			m1.draw(window);
 			window.display();
 		}
 
