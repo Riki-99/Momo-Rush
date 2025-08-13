@@ -8,6 +8,14 @@ int main(void)
 	// Obtaining dimensions of the desktop
 	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
 	sf::RenderWindow window(desktop, "Momo Rush");
+	loadAllTextures();
+	int counter = 0;
+	Background b1(0);
+	Background b2(1);
+	Background b3(2);
+	Player p(0, 0, 0, 1, 1, 56);
+	p.sprite.move({ static_cast<float>(gd::tilesize * 6) , 0.f});
+	//Map m1("./Assets/map1.txt");
 	while (window.isOpen())
 	{
 		while (std::optional event = window.pollEvent())
@@ -17,25 +25,18 @@ int main(void)
 			{
 				window.close();
 			}
-			
-			// Clearing the window before each draw, setting rgb(0,0,0) as background color
-			window.clear(sf::Color(0, 0, 0));
-
-			// Drawing code goes here
-			loadAllTextures();
-			Background b1(0);
-			Background b2(1);
-			Background b3(2);
-			b1.draw(window);
-			b2.draw(window);
-			b3.draw(window);
-			Player p(0, 0, 0, 1, 1, 56);
-			p.draw(window);
-			Map m1("./Assets/map1.txt");
-			m1.draw(window);
-			window.display();
 		}
 
+		window.clear(sf::Color(0, 0, 0));
+		b1.draw(window);
+		b2.draw(window);
+		b3.draw(window);
+		Map m1("./Assets/map1.txt");
+		m1.draw(window);
+		p.draw(window);
+		p.update(m1);
+		window.display();
+		counter++;
 	}
 	return 0;
 }
