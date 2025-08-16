@@ -14,7 +14,9 @@ int main(void)
 	Background b2(1);
 	Background b3(2);
 	Player p(0, 0, 0, 1, 1, 56);
-	p.sprite.move({ static_cast<float>(gd::tilesize * 6) , 0.f});
+	p.sprite.move({ static_cast<float>(gd::tilesize * 12) , 0.f});
+		Map m1("./Assets/newmap.txt");
+		
 	//Map m1("./Assets/map1.txt");
 	while (window.isOpen())
 	{
@@ -28,13 +30,12 @@ int main(void)
 		}
 
 		window.clear(sf::Color(0, 0, 0));
+		p.update(m1);
 		b1.draw(window);
 		b2.draw(window);
 		b3.draw(window);
-		Map m1("./Assets/map1.txt");
-		m1.draw(window);
+		m1.draw(window, static_cast<int>(p.getHitBox().position.x));
 		p.draw(window);
-		p.update(m1);
 		window.display();
 		counter++;
 	}

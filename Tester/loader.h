@@ -4,28 +4,36 @@
 #include <fstream>
 #include <vector>
 #include <cmath>
+using namespace std;
+
 // A template for storing all textures in vectors because we need to load the mininal amount of textures possible and reuse them for creating sprites
 template <class T>
 class TextureList {
 private:
     // Inline because without using inline, this templated class would not be definted but only declared because of the templatization
-	inline static std::vector<Txt>  texture;
+    inline static std::vector<Txt>  texture;
 public:
     // Member function to get the texture of this static class belonging to the specified index of the vector stored in it.
-	static Txt& getTexture(int idx)
-	{
-		return texture[idx];
-	}
+    static Txt& getTexture(int idx)
+    {
+        return texture[idx];
+    }
     // Adding a new texture whose path is passed as argument
-	static void addTexture(str s)
-	{
-		texture.push_back(Txt(s));
-	}
-	friend void loadAllTextures();
+    static void addTexture(str s)
+    {
+        texture.push_back(Txt(s));
+    }
+    friend void loadAllTextures();
 };
 // A function to load all textures
 void loadAllTextures();
 
+// A class to store data of individual sprite data 
+class imageData {
+    int xIdx;
+    int yIdx;
+    int size;
+};
 // A class that serves as blueprint for all objects that will be of the tile size.
 class Element {
 protected:
@@ -34,31 +42,31 @@ protected:
 public:
     Sprt sprite;
     // Setting up the constructor, no default constructor;
-     Element(int index, int xthIdx, int ythIdx, int width, int height, int size, Txt&  ref): sprite(ref){
+    Element(int index, int xthIdx, int ythIdx, int width, int height, int size, Txt& ref) : sprite(ref) {
         sprite.setTextureRect(intrect(
             { xthIdx * size, ythIdx * size },
             { size * width, size * height }
         ));
-        sprite.setScale({ static_cast<float>(gd::tilesize/ size), static_cast<float>(gd::tilesize/ size) });
+        sprite.setScale({ static_cast<float>(gd::tilesize / size), static_cast<float>(gd::tilesize / size) });
         hitbox = sprite.getGlobalBounds();
-        //setPosition({ 5 * gd::tilesize, 5 * gd::tilesize });
     }
-     // Set position using absolute value
-     void setPosition(vec2f position) {
-         sprite.setPosition(position);
-         hitbox = sprite.getGlobalBounds();
-     }
-     // Set on tiles
-     void setOnTile(int tileX, int tileY)
-     {
-         setPosition({ tileX * gd::tilesize, tileY * gd::tilesize });
+    // Set position using absolute value
+    void setPosition(vec2f position) {
+        sprite.setPosition(position);
+        hitbox = sprite.getGlobalBounds();
+    }
+    // Set on tiles (world coords)
+    void setOnTile(int tileX, int tileY)
+    {
+        setPosition({ tileX * gd::tilesize, tileY * gd::tilesize });
+    }
 
-     }
-
-     // Draw on a sf::RenderWindow
-    void draw(rw& window) {
-
-        window.draw(sprite);
+    // Draw on a sf::RenderWindow
+    // cameraOffsetPx = how many pixels the world should be shifted to the left (camera world x - screen anchor x)
+    void draw(rw& window, float cameraOffsetPx) {
+        Sprt newsprite = sprite;
+        newsprite.move({ -cameraOffsetPx, 0.f });
+        window.draw(newsprite);
     }
 
     floatrect getHitBox() {
@@ -76,25 +84,25 @@ public:
     Tile(int i, int x, int y, int w, int h, int s, int c) : Element(i, x, y, w, h, s, TextureList<Tile>::getTexture(i)) { index = c; solid = bool(index); }
     Tile() : Element(0, 0, 0, 0, 0, 0, tiletxtr) { index = 0; solid = bool(index); }
 };
+
 class Map
 {
-     const int rows = 10;
-     const int cols = 100;
-     // a 2d vector for configuring all the tiles 
-     std::vector < std::vector<Tile>> tiles;
+    const int rows = 10;
+    const int cols = 100;
+    // a 2d vector for configuring all the tiles 
+    std::vector < std::vector<Tile>> tiles;
 
 public:
     // Setting the dimensions of rows and cols in runtime, initializing rows number of Tile vectors that contains yet another tile cols number of Tile vectors
-    Map(str s): tiles(rows) {
+    Map(str s) : tiles(rows) {
         int tmp;
         std::ifstream file(s);
-        int colCt = cols;
         for (int i = 0; i < rows; i++)
         {
-            for (int j = 0; j < 16; j++)
+            for (int j = 0; j < 10000 ; j++)
             {
-                file >> tmp;
-                switch (tmp) 
+                if (!(file >> tmp)) tmp = 0; // safe fallback if file shorter than expected
+                switch (tmp)
                 {
                 case 0:
                     tiles[i].push_back(Tile(0, 4, 0, 1, 1, 24, 0));
@@ -110,26 +118,109 @@ public:
                     break;
                 case 4:
                     tiles[i].push_back(Tile(0, 0, 11, 1, 1, 24, 4));
+                    break;
+                default:
+                    tiles[i].push_back(Tile(0, 4, 0, 1, 1, 24, 0));
                 }
-                // setontile(j,i) because we use the distance from the absolute left, j being the distance from the horizontal axix and i being the disntace from the vertical axis.
-                tiles[i][tiles[i].size()-1].setOnTile(j, i);
+                // place in world coords
+                tiles[i][tiles[i].size() - 1].setOnTile(j, i);
             }
         }
     }
 
-    void  draw(rw& window) {
-        for (int i = 0; i < tiles.size(); i++)
+    // safe bounds test
+    bool inBounds(int row, int col) const {
+        if (row < 0 || row >= static_cast<int>(tiles.size())) return false;
+        if (col < 0 || col >= static_cast<int>(tiles[row].size())) return false;
+        return true;
+    }
+
+    bool isSolid(int row, int col) const {
+        if (!inBounds(row, col)) return false;
+        return tiles[row][col].solid;
+    }
+
+    void  draw(rw& window, int playerXRealCoords) {
+        // how many tiles to draw to each side of the player
+        const int viewRange = 16;
+        const int playerScreenTileX = 7; // where on screen the player is fixed (in tiles)
+        // camera offset in pixels: world, actual x of player - screen or displaying x of player
+        float cameraOffsetPx = static_cast<float>(playerXRealCoords - playerScreenTileX * gd::tilesize);
+        int playerXRealIndex = static_cast<int>(playerXRealCoords / gd::tilesize);
+
+        for (int i = 0; i < static_cast<int>(tiles.size()); i++)
         {
-            for (int j = 0; j < tiles[0].size(); j++)
+            // Putting the player in center and drawing equally to the left and right side of the player
+            int start =  playerXRealIndex - viewRange;
+            int end = playerXRealIndex + viewRange;
+            if (start < 0) start = 0;
+            if (end >= static_cast<int>(tiles[i].size())) end = static_cast<int>(tiles[i].size()) - 1;
+            for (int j = start; j <= end; j++)
             {
-                tiles[i][j].draw(window);
+                // draw each tile offset by camera
+                tiles[i][j].draw(window, cameraOffsetPx);
             }
         }
-   }
-    // Returns tile at map.tiles[i][j]
+    }
+    // Returns tile at map.tiles[i][j] (row, col) caller needs to make sure that the values will be inbound
     Tile& getTile(int i, int j)
     {
         return tiles[i][j];
+    }
+
+    static string generate(int cols)
+    {
+        string name = "./Assets/newmap.txt";
+        ofstream file(name);
+        int rand;
+        for (int i = 0; i < 10; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                if (i <= 6)
+                {
+                    file << 0;
+                }
+                else if (i == 7)
+                {
+                    rand = gd::random(0, 100);
+                    // 70% texture 0
+                    if (rand <= 70)
+                    {
+                        rand = 0;
+                    }
+                    // 15% texture 1
+                    else if (rand <= 85)
+                    {
+                        rand = 1;
+                    }
+                    // 15% texture 2
+                    else {
+                        rand = 2;
+                    }
+                    file << rand;
+                }
+                else if (i == 8)
+                {
+                    rand = gd::random(0, 100);
+                    if (rand <= 50)
+                    {
+                        rand = 1;
+                    }
+                    else {
+                        rand = 2;
+                    }
+                    file << rand;
+                }
+                else if (i== 9)
+                {
+                    file << 3;
+                }
+                file << " ";
+            }
+            file << endl;
+        }
+        return name;
     }
 };
 
@@ -138,91 +229,163 @@ class Entity : virtual public Element {
 protected:
     int health;
     vec2f velocity;
+    vec2f acc;
+    const float frictionCoeff = 0.5f;
     const int timeUnit = 1;
-    const int fallVelocity = 1;
+    const float gravity = 0.003f;
+    bool grounded, jumping;
+    float movementSpeed;
 public:
     virtual void update(Map& m) = 0;
-    void move(vec2f displacement)
+    void move(vec2f displacement, Map& m)
     {
-        //std::cout << "Vel : " << velocity.x << " " << velocity.y << std::endl;
-        sprite.move(displacement);
-    }
-    void setGravity(Map& m) {
-        vec2i blockbeneath = standingOn();
-        // If block below is not solid
-        //std::cout << "Index: "<< m.getTile(blockbeneath.y, blockbeneath.x).index << std::endl;
-        if (!m.getTile(blockbeneath.y, blockbeneath.x).solid)
+        // compute which tiles we're testing against
+        vec2i leftBlock = blockToLeft();   // {x, y}
+        vec2i rightBlock = blockToRight(); // {x, y}
+        vec2i downBlock = standingOn();    // {x, y+1}
+
+        // Move to left if the tile to left is not solid and in bounds
+        if (displacement.x < 0) {
+            if (m.inBounds(leftBlock.y, leftBlock.x)) {
+                if (!m.isSolid(leftBlock.y, leftBlock.x)) sprite.move({ displacement.x, 0 });
+            }
+            else {
+                // out of bounds horizontally: block movement to avoid crash
+            }
+        }
+        // Move to right if the tile to right is not solid
+        else if (displacement.x > 0) {
+            if (m.inBounds(rightBlock.y, rightBlock.x)) {
+                if (!m.isSolid(rightBlock.y, rightBlock.x)) sprite.move({ displacement.x, 0 });
+            }
+            else {
+                // out of bounds horizontally: block movement to avoid crash
+            }
+        }
+
+        // If positive y displacement, falling down
+        if (displacement.y > 0)
         {
-            //std::cout << "not solid" << std::endl;
-            velocity.y = fallVelocity;
+            // If block below is solid, the player is grounded and not jumping
+            if (m.inBounds(downBlock.y, downBlock.x) && m.isSolid(downBlock.y, downBlock.x))
+            {
+                grounded = true;
+                jumping = false;
+                // snap to top of tile to avoid passing through (optional)
+                 float snapY = downBlock.y * gd::tilesize - hitbox.size.y; // top of block minus height
+                 setPosition({ sprite.getPosition().x, snapY });
+            }
+            else {
+                sprite.move({ 0, displacement.y });
+            }
         }
-        else {
-            //std::cout << "solid" << std::endl;
-            velocity.y = 0;
+        else if (displacement.y < 0)
+        {
+            sprite.move({ 0, displacement.y });
         }
+
     }
+
     // Returns the tile the entity is standing on
     vec2i standingOn() {
         //Standing on tile of xth index and y+1th index
-        return { static_cast<int>(std::floor(hitbox.position.x / gd::tilesize)), static_cast<int>(std::floor(hitbox.position.y / gd::tilesize + 1)) };
+        // Taking average of the hitbox to determine if falling
+        return { static_cast<int>(std::floor((hitbox.position.x + hitbox.size.x/2) / gd::tilesize)), static_cast<int>(std::floor((hitbox.position.y) / gd::tilesize + 1)) };
     }
+
     // Returns the tile to the left of the entity
     vec2i blockToLeft() {
-        // God knows why -0.7
-        // I'm god
-        // -0.7 because the sprite has left empty padding
-        return { static_cast<int>(std::ceil(hitbox.position.x / gd::tilesize -0.7)), static_cast<int>(std::floor(hitbox.position.y / gd::tilesize)) };
+        return { static_cast<int>(std::floor((hitbox.position.x + hitbox.size.x/3) / gd::tilesize)), static_cast<int>(std::floor(hitbox.position.y / gd::tilesize)) };
     }
 
     // Returns the tile to the right of the entity
     vec2i blockToRight() {
-        // God knows why +0.8
-        // I'm god
-        // +0.8 because the sprite has right empty padding
-        return { static_cast<int>(std::floor(hitbox.position.x / gd::tilesize + 0.8)), static_cast<int>(std::floor(hitbox.position.y / gd::tilesize)) };
+        return { static_cast<int>(std::ceil((hitbox.position.x - hitbox.size.x/3)/ gd::tilesize)), static_cast<int>(std::floor(hitbox.position.y / gd::tilesize)) };
     }
 
 };
 
 class Player : public Entity {
+private:
+    const float jumpHeight = 0.9f;
 public:
     Player(int i, int x, int y, int w, int h, int s) : Element(i, x, y, w, h, s, TextureList<Player>::getTexture(i)) {
         health = 10;
         velocity = { 0,0 };
+        acc = { 0.f,0.f };
+        grounded = false;
+        jumping = false;
+        acc.y = gravity;
+        movementSpeed = 1;
     }
     // Updates everything for the entity
     void update(Map& m)
     {
         horizontalMotion(m);
-        setGravity(m);
-        move({ velocity.x * timeUnit, velocity.y * timeUnit });
+        if (abs(acc.x) > frictionCoeff)
+        {
+            if (acc.x < 0)
+            {
+                velocity.x = acc.x + frictionCoeff;
+            }
+            else if (acc.x > 0) {
+                velocity.x = acc.x - frictionCoeff;
+            }
+        }
+        else {
+            acc.x = 0;
+            velocity.x = 0;
+        }
+        checkJump();
+        velocity.y += acc.y;
+        move({ velocity.x * timeUnit, velocity.y * timeUnit }, m);
         hitbox = sprite.getGlobalBounds();
     }
-
-    void horizontalMotion(Map &m) {
-        velocity.x = 0;
-
+    void horizontalMotion(Map& m) {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
         {
-            vec2i leftBlock = blockToLeft();
-            if (!m.getTile(leftBlock.y, leftBlock.x).solid)
-            {
-                velocity.x = -1;
-
-            }
+            acc.x = -movementSpeed;
         }
-            
-        // If block below is not solid
-        //std::cout << "Index: "<< m.getTile(blockbeneath.y, blockbeneath.x).index << std::endl;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
         {
-            vec2i rightBlock = blockToRight();
-            if (!m.getTile(rightBlock.y, rightBlock.x).solid)
+            acc.x = +movementSpeed;
+        }
+        else {
+            if (acc.x < 0)
             {
-                velocity.x = 1;
+                acc.x += 0.1 * movementSpeed;
+            }
 
+            else if (acc.x > 0)
+            {
+                acc.x -= 0.1 * movementSpeed;
             }
         }
+    }
+    void checkJump()
+    {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
+        {
+            if (!jumping and grounded)
+            {
+                cout << "Jump invoked" << endl;
+                velocity.y = -jumpHeight;
+                jumping = true;
+                grounded = false;
+            }
+        }
+    }
+
+    void draw(rw& window) {
+        // fix player at this many tiles from the left of the screen
+        const int playerScreenTileX = 7;
+        vec2f currentPos = sprite.getPosition();
+        // Set player's on-screen X to playerScreenTileX * tilesize (keep Y unchanged)
+        sprite.setPosition({ static_cast<float>(playerScreenTileX * gd::tilesize), currentPos.y });
+        // When drawing player, we pass cameraOffset = 0 because player's position is already in screen space
+        Element::draw(window, 0.f);
+        sprite.setPosition(currentPos);
     }
 };
 
