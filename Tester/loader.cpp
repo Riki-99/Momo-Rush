@@ -15,6 +15,7 @@ void loadAllTextures() {
 	TextureList<fireTrap>::addTexture("./Assets/traps/fire_trap.png");
 	TextureList<pitTrap>::addTexture("./Assets/traps/pit_trap.png");
 	TextureList<spikeTrap>::addTexture("./Assets/traps/spike_trap.png");
+	TextureList<momoTrap>::addTexture("./Assets/momo.png");
 
 	/*standardTiles.push_back(Tile(0, 4, 0, 1, 1, 24));
 	standardTiles.push_back(Tile(0, 12, 0, 1, 1, 24));

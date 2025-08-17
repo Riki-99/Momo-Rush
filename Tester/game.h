@@ -1,23 +1,26 @@
 #pragma once
 #include "loader.h"
 #include "global.h"
-#include "player.h"
+
+class Player;
 
 class game {
     // 0 means ended, 1 means on going
     int gameState;
+    int score = 0;
+    Clock clk;
     Player* p;
+    int oneGameDuration = 60;
 public:
-    int onGoing()
-    {
-        if (p->dead)
-        {
-            return 0;
-        }
-        return 1;
+    int onGoing();
+    game(Player& pl);
+
+    void incrementScore() {
+        score++;
     }
-    game(Player& pl) {
-        p = &pl;
-        gameState = 1;
+
+    void draw(rw& window)
+    {
+
     }
 };

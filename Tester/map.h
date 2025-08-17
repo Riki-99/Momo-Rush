@@ -12,16 +12,23 @@ protected:
     int width, height;
     vector <imageData> imgData;
 public:
+    bool consumed;
     // Index of the tile used.
     bool trap;
     int index;
     // Whether the tile is solid or not
     bool solid;
     Tile(int i, int x, int y, int w, int h, int c, int fct) : Element(i, x, y, w, h, TextureList<Tile>::getTexture(i)) {
+        consumed = false;
         width = w;
         height = h;
         index = c; 
-        if (c > 0 and c < 5)
+        if (c == 0 or c == 4)
+        {
+            solid = false;
+            trap = false;
+        }
+        else if (c > 0 and c < 5)
         {
             solid = true;
             trap = false;
@@ -29,7 +36,6 @@ public:
         else {
             solid = false;
             trap = true;
-            if (c == 0) trap = false;
         }
         frameCt = fct;
         currentFrameIdx = 0;
@@ -65,6 +71,7 @@ public:
     }
 
     void draw(rw &window, float offset) {
+        if (consumed == true) return;
         if (frameCt >= 2)
         {
             animate();

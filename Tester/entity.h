@@ -2,6 +2,7 @@
 #include "global.h"
 #include "loader.h"
 #include "map.h"
+#include "game.h"
 
 class Entity : virtual public Element {
 protected:
@@ -24,7 +25,7 @@ protected:
 public:
     bool dead;
     Entity(int totalFramesPerAction, int frameSize);
-    virtual void update(Map& m) = 0;
+    virtual void update(Map& m, game& g) = 0;
     void move(vec2f displacement, Map& m);
 
     // Returns the tile the entity is standing on

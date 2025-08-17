@@ -25,10 +25,10 @@ Map::Map(str s) : tiles(rows) {
             case 3:
                 tiles[i].push_back(Tile(0, 15, 0, 24, 24, 3, 1));
                 break;
+                // 4, we got momo
             case 4:
-                tiles[i].push_back(Tile(0, 0, 11, 24, 24, 4, 1));
+                tiles[i].push_back(momoTrap(502, 502, 1));
                 break;
-                // Upto 4, we've got tiles and after 4, we've got traps
                 // 5 to 8 we've got obstacles
             case 5:
                 tiles[i].push_back(bearTrap(32, 32, 4));
@@ -105,14 +105,29 @@ string Map::generate(int cols)
     {
         for (int j = 0; j < cols; j++)
         {
-            if (i <= 6)
+            if (i < 6)
             {
                 file << 0;
+            }
+            else if (i == 6)
+            {
+                rand = gd::random(0, 100);
+                if (rand <= 5) {
+                    rand = 4;
+                }
+                else {
+                    rand = 0;
+                }
+                file << rand;
             }
             else if (i == 7)
             {
                 rand = gd::random(0, 100);
                 // 70% texture 0
+                if (rand <= 3)
+                {
+                    rand = 4;
+                }
                 if (rand <= 60)
                 {
                     rand = 0;

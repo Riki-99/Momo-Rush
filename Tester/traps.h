@@ -32,3 +32,11 @@ public:
 		frameCt = fct;
 	}
 };
+
+class momoTrap : public Traps {
+public:
+	momoTrap(int wth, int ht, int fct) : Element(0, 0, 0, wth, ht, TextureList<momoTrap>::getTexture(0)), Tile(0, 0, 0, wth, ht, 4, fct) {
+		frameCt = fct;
+		sprite.scale({0.4f, 0.4f});
+	}
+};

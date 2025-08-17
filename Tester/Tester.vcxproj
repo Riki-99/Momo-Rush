@@ -132,6 +132,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="entity.cpp" />
+    <ClCompile Include="game.cpp" />
     <ClCompile Include="global.h" />
     <ClCompile Include="global.cpp" />
     <ClCompile Include="main.cpp" />

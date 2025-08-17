@@ -1,5 +1,6 @@
 #include "player.h";
 #include "map.h";
+#include "game.h"
 
 Player::Player(int i, int x, int y, int w, int h) : Element(i, x, y, w, h, TextureList<Player>::getTexture(i)), Entity(6, 56) {
     health = 10;
@@ -7,7 +8,7 @@ Player::Player(int i, int x, int y, int w, int h) : Element(i, x, y, w, h, Textu
 }
 
 
-void Player::update(Map& m)
+void Player::update(Map& m, game &g)
 {
     horizontalMotion(m);
     if (abs(acc.x) > frictionCoeff)
@@ -29,7 +30,7 @@ void Player::update(Map& m)
     move({ velocity.x * timeUnit, velocity.y * timeUnit }, m);
     animate();
     hitbox = sprite.getGlobalBounds();
-    checkCollisionWithObstacle(m);
+    checkCollisionWithObstacle(m, g);
 }
 
 

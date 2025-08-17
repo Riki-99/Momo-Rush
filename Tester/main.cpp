@@ -19,8 +19,8 @@ int main(void)
 	Map::generate(10000);
 	Map m1("./Assets/newmap.txt");
 	Player p(0, 0, 0, 56, 56);
-	p.move({ static_cast<float>(tilesize * 12) , 0.f}, m1);
 	game g(p);
+	p.move({ static_cast<float>(tilesize * 12) , 0.f}, m1);
 	while (window.isOpen())
 	{
 		while (std::optional event = window.pollEvent())
@@ -36,7 +36,7 @@ int main(void)
 		
 		if (g.onGoing())
 		{
-			p.update(m1);
+			p.update(m1, g);
 		}
 		b1.draw(window);
 		b2.draw(window);
