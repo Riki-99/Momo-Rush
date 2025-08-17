@@ -32,4 +32,6 @@ typedef sf::Vector2i vec2i;
 typedef sf::FloatRect floatrect;
 typedef sf::IntRect intrect;
 typedef sf::Clock Clock;
+typedef sf::Font font;
+typedef sf::Text text;
 typedef GlobalData gd;

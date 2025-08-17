@@ -1,10 +1,17 @@
 #pragma once
 #include "global.h"
+#include <SFML/Audio.hpp>
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <cmath>
 using namespace std;
+
+extern sf::SoundBuffer s1;
+extern sf::SoundBuffer s2;
+extern sf::SoundBuffer s3;
+extern sf::Music s4;
+extern sf::Music s5;
 
 // A template for storing all textures in vectors because we need to load the mininal amount of textures possible and reuse them for creating sprites
 template <class T>

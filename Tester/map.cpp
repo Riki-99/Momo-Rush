@@ -3,7 +3,6 @@
 
 // Setting the dimensions of rows and cols in runtime, initializing rows number of Tile vectors that contains yet another tile cols number of Tile vectors
 Map::Map(str s) : tiles(rows) {
-    cout << "Check point a" << endl;
     int tmp;
     std::ifstream file(s);
     for (int i = 0; i < rows; i++)
@@ -49,7 +48,6 @@ Map::Map(str s) : tiles(rows) {
             tiles[i][tiles[i].size() - 1].setOnTile(j, i);
         }
     }
-    cout << "Check point b" << endl;
 }
 
 // safe bounds test

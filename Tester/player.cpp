@@ -1,4 +1,5 @@
 #include "player.h";
+#include "loader.h";
 #include "map.h";
 #include "game.h"
 
@@ -62,7 +63,6 @@ void Player::checkJump()
     {
         if (!jumping and grounded)
         {
-            cout << "Jump invoked" << endl;
             velocity.y = -jumpHeight;
             jumping = true;
             grounded = false;
@@ -79,4 +79,28 @@ void Player::draw(rw& window) {
     // When drawing player, we pass cameraOffset = 0 because player's position is already in screen space
     Element::draw(window, 0.f);
     sprite.setPosition(currentPos);
+}
+
+void Player::checkCollisionWithObstacle(Map& m, game& g)
+{
+    vec2i block_below = standingOn();
+    // Check a small neighborhood of tiles around the player
+    for (int dy = -1; dy <= 1; ++dy) {
+        for (int dx = -1; dx <= 1; ++dx) {
+            Tile& tile = m.getTile(block_below.y + dy, block_below.x + dx);
+            floatrect tilehbox = tile.getHitBox();
+
+            if (hitbox.findIntersection(tilehbox)) {
+                if (tile.trap) {
+                    dead = true;
+                    return; // stop as soon as player dies
+                }
+                else if (tile.index == 4 && !tile.consumed) {
+                    tile.consumed = true;
+                    g.incrementScore();
+                    sf::Sound(s2).play();
+                }
+            }
+        }
+    }
 }

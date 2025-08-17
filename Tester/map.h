@@ -41,7 +41,6 @@ public:
         currentFrameIdx = 0;
         if (frameCt>=2)
         {
-            cout << "All good" << endl;
             frameCt = fct;
             imgData.resize(fct);
             for (int i = 0; i < fct; i++)
@@ -49,7 +48,6 @@ public:
                 imgData[i] = (imageData(i, 0, width, height));
             }
             clk.restart();
-            cout << "All good 2" << endl;
         }
     }
     Tile() : Element(0, 0, 0, 0, 0, tiletxtr) { index = 0; solid = bool(index); frameCt = 0; currentFrameIdx = 0;}

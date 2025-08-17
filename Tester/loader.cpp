@@ -2,12 +2,18 @@
 #include "player.h"
 #include "map.h"
 #include "traps.h"
+sf::SoundBuffer s1;
+sf::SoundBuffer s2;
+sf::SoundBuffer s3;
+sf::Music s4;
+sf::Music s5;
 
 Txt tiletxtr("./Assets/oak-resources/oak_woods_tileset.png");
 void loadAllTextures() {
 	TextureList<Background>::addTexture("./Assets/oak-resources/background/background_layer_1.png");
 	TextureList<Background>::addTexture("./Assets/oak-resources/background/background_layer_2.png");
 	TextureList<Background>::addTexture("./Assets/oak-resources/background/background_layer_3.png");
+	TextureList<Background>::addTexture("./Assets/oak-resources/background/loadingbg.png");
 	TextureList<Player>::addTexture("./Assets/character-resources/png/blue/char_blue_1.png");
 	TextureList<Enemy>::addTexture("./Assets/character-resources/png/red/char_red_1.png");
 	TextureList<Tile>::addTexture("./Assets/oak-resources/oak_woods_tileset.png");
@@ -16,6 +22,12 @@ void loadAllTextures() {
 	TextureList<pitTrap>::addTexture("./Assets/traps/pit_trap.png");
 	TextureList<spikeTrap>::addTexture("./Assets/traps/spike_trap.png");
 	TextureList<momoTrap>::addTexture("./Assets/momo.png");
+
+    s4 = sf::Music("./Assets/audios/cheerful.mp3");
+    s3 = sf::SoundBuffer("./Assets/audios/runningnew.mp3");
+    s2 = sf::SoundBuffer("./Assets/audios/pickup.mp3");
+    s1 = sf::SoundBuffer("./Assets/audios/jumpingnew.mp3");
+    s5 = sf::Music ("./Assets/audios/dramatic.mp3");
 
 	/*standardTiles.push_back(Tile(0, 4, 0, 1, 1, 24));
 	standardTiles.push_back(Tile(0, 12, 0, 1, 1, 24));
