@@ -22,6 +22,7 @@ protected:
     // Which frame among the states
     int currentFrame;
 public:
+    bool dead;
     Entity(int totalFramesPerAction, int frameSize);
     virtual void update(Map& m) = 0;
     void move(vec2f displacement, Map& m);

@@ -13,6 +13,7 @@ protected:
     vector <imageData> imgData;
 public:
     // Index of the tile used.
+    bool trap;
     int index;
     // Whether the tile is solid or not
     bool solid;
@@ -20,7 +21,16 @@ public:
         width = w;
         height = h;
         index = c; 
-        solid = bool(index); 
+        if (c > 0 and c < 5)
+        {
+            solid = true;
+            trap = false;
+        }
+        else {
+            solid = false;
+            trap = true;
+            if (c == 0) trap = false;
+        }
         frameCt = fct;
         currentFrameIdx = 0;
         if (frameCt>=2)

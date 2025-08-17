@@ -29,6 +29,7 @@ void Player::update(Map& m)
     move({ velocity.x * timeUnit, velocity.y * timeUnit }, m);
     animate();
     hitbox = sprite.getGlobalBounds();
+    checkCollisionWithObstacle(m);
 }
 
 

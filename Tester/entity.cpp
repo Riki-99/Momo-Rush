@@ -10,6 +10,7 @@ Entity::Entity(int totalFramesPerAction, int frameSize) : Element(0, 0, 0, frame
     acc.y = gravity;
     currentState = idle;
     currentFrame = 0;
+    dead = false;
 
     int stateCount = static_cast<int>(shielding) + 1;
     imgData.resize(stateCount);

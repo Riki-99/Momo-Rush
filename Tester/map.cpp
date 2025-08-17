@@ -88,10 +88,12 @@ void  Map::draw(rw& window, int playerXRealCoords) {
 }
 
 
-// Returns tile at map.tiles[i][j] (row, col) caller needs to make sure that the values will be inbound
+// Returns tile at map.tiles[i][j] (row, col)
 Tile& Map::getTile(int i, int j)
 {
-    return tiles[i][j];
+    if(inBounds(i,j))
+        return tiles[i][j];
+    return tiles[0][0];
 }
 
 string Map::generate(int cols)

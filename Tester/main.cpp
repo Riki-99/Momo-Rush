@@ -5,6 +5,7 @@
 #include "map.h"
 #include "entity.h"
 #include "player.h"
+#include "game.h"
 
 int main(void)
 {
@@ -15,10 +16,11 @@ int main(void)
 	Background b1(0);
 	Background b2(1);
 	Background b3(2);
-	Player p(0, 0, 0, 56, 56);
 	Map::generate(10000);
 	Map m1("./Assets/newmap.txt");
+	Player p(0, 0, 0, 56, 56);
 	p.move({ static_cast<float>(gd::tilesize * 12) , 0.f}, m1);
+	game g(p);
 	while (window.isOpen())
 	{
 		while (std::optional event = window.pollEvent())
@@ -37,6 +39,10 @@ int main(void)
 		b3.draw(window);
 		m1.draw(window, static_cast<int>(p.getHitBox().position.x));
 		p.draw(window);
+		if (!g.onGoing())
+		{
+			cout << "Finished" << endl;
+		}
 		window.display();
 		counter++;
 	}
