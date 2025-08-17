@@ -69,8 +69,8 @@ void  Map::draw(rw& window, int playerXRealCoords) {
     const int viewRange = 16;
     const int playerScreenTileX = 7; // where on screen the player is fixed (in tiles)
     // camera offset in pixels: world, actual x of player - screen or displaying x of player
-    float cameraOffsetPx = static_cast<float>(playerXRealCoords - playerScreenTileX * gd::tilesize);
-    int playerXRealIndex = static_cast<int>(playerXRealCoords / gd::tilesize);
+    float cameraOffsetPx = static_cast<float>(playerXRealCoords - playerScreenTileX * tilesize);
+    int playerXRealIndex = static_cast<int>(playerXRealCoords / tilesize);
 
     for (int i = 0; i < static_cast<int>(tiles.size()); i++)
     {

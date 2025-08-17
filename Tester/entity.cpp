@@ -65,7 +65,7 @@ void Entity::move(vec2f displacement, Map& m)
             grounded = true;
             jumping = false;
             // snap to top of tile to avoid passing through
-            float snapY = downBlock.y * gd::tilesize - hitbox.size.y; // top of block minus height
+            float snapY = downBlock.y * tilesize - hitbox.size.y; // top of block minus height
             setPosition({ sprite.getPosition().x, snapY });
         }
         else {
@@ -85,17 +85,17 @@ void Entity::move(vec2f displacement, Map& m)
 vec2i Entity::standingOn() {
     //Standing on tile of xth index and y+1th index
     // Taking average of the hitbox to determine if falling
-    return { static_cast<int>(std::floor((hitbox.position.x + hitbox.size.x / 2) / gd::tilesize)), static_cast<int>(std::floor((hitbox.position.y) / gd::tilesize + 1)) };
+    return { static_cast<int>(std::floor((hitbox.position.x + hitbox.size.x / 2) / tilesize)), static_cast<int>(std::floor((hitbox.position.y) / tilesize + 1)) };
 }
 
 // Returns the tile to the left of the entity
 vec2i Entity::blockToLeft() {
-    return { static_cast<int>(std::floor((hitbox.position.x + hitbox.size.x / 3) / gd::tilesize)), static_cast<int>(std::floor(hitbox.position.y / gd::tilesize)) };
+    return { static_cast<int>(std::floor((hitbox.position.x + hitbox.size.x / 3) / tilesize)), static_cast<int>(std::floor(hitbox.position.y / tilesize)) };
 }
 
 // Returns the tile to the right of the entity
 vec2i Entity::blockToRight() {
-    return { static_cast<int>(std::ceil((hitbox.position.x - hitbox.size.x / 3) / gd::tilesize)), static_cast<int>(std::floor(hitbox.position.y / gd::tilesize)) };
+    return { static_cast<int>(std::ceil((hitbox.position.x - hitbox.size.x / 3) / tilesize)), static_cast<int>(std::floor(hitbox.position.y / tilesize)) };
 }
 
 void Entity::addImgData(int idx, int frameCol, int frameRow, int sX, int sY) {

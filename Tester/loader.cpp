@@ -28,7 +28,7 @@ void loadAllTextures() {
             { xthIdx * width, ythIdx * height },
             {  width, height }
         ));
-        sprite.setScale({ static_cast<float>(gd::tilesize / width), static_cast<float>(gd::tilesize / height) });
+        sprite.setScale({ static_cast<float>(tilesize / width), static_cast<float>(tilesize / height) });
         hitbox = sprite.getGlobalBounds();
     }
     // Set position using absolute value
@@ -39,7 +39,7 @@ void loadAllTextures() {
     // Set on tiles (world coords)
     void Element::setOnTile(int tileX, int tileY)
     {
-        setPosition({ tileX * gd::tilesize, tileY * gd::tilesize });
+        setPosition({ tileX * tilesize, tileY * tilesize });
     }
 
     // Draw on a sf::RenderWindow

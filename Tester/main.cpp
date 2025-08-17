@@ -10,7 +10,7 @@
 int main(void)
 {
 	// Obtaining dimensions of the desktop, defined in global.cpp
-	sf::RenderWindow window(desktop, "Momo Rush");
+	sf::RenderWindow window(sf::VideoMode({1920, 1080}), "Momo Rush");
 	loadAllTextures();
 	int counter = 0;
 	Background b1(0);
@@ -19,7 +19,7 @@ int main(void)
 	Map::generate(10000);
 	Map m1("./Assets/newmap.txt");
 	Player p(0, 0, 0, 56, 56);
-	p.move({ static_cast<float>(gd::tilesize * 12) , 0.f}, m1);
+	p.move({ static_cast<float>(tilesize * 12) , 0.f}, m1);
 	game g(p);
 	while (window.isOpen())
 	{
@@ -33,18 +33,17 @@ int main(void)
 		}
 
 		window.clear(sf::Color(0, 0, 0));
-		p.update(m1);
+		
+		if (g.onGoing())
+		{
+			p.update(m1);
+		}
 		b1.draw(window);
 		b2.draw(window);
 		b3.draw(window);
 		m1.draw(window, static_cast<int>(p.getHitBox().position.x));
 		p.draw(window);
-		if (!g.onGoing())
-		{
-			cout << "Finished" << endl;
-		}
 		window.display();
-		counter++;
 	}
 	return 0;
 }

@@ -74,7 +74,7 @@ void Player::draw(rw& window) {
     const int playerScreenTileX = 7;
     vec2f currentPos = sprite.getPosition();
     // Set player's on-screen X to playerScreenTileX * tilesize (keep Y unchanged)
-    sprite.setPosition({ static_cast<float>(playerScreenTileX * gd::tilesize), currentPos.y });
+    sprite.setPosition({ static_cast<float>(playerScreenTileX * tilesize), currentPos.y });
     // When drawing player, we pass cameraOffset = 0 because player's position is already in screen space
     Element::draw(window, 0.f);
     sprite.setPosition(currentPos);

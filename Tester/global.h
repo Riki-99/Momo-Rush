@@ -2,15 +2,8 @@
 #include <SFML/Graphics.hpp>
 #include <random>
 // Refers to the desktop
-extern sf::VideoMode desktop;
 
 struct GlobalData {
-	static float tilesize;
-	static const int horizontalTiles = 16;
-	static const int verticalTiles = 10;
-	// This is how many tiles to the right of the screen the position of player is to be fixed
-	static const int playerScreenTileX = 7;
-	
 	// Returns a random number between low and high, inclusive
 	static int random(int low, int high)
 	{
@@ -22,6 +15,14 @@ struct GlobalData {
 			return distr(gen);
 	}
 };
+
+inline float tilesize = 1080 / 10.f;
+inline const int horizontalTiles = 16;
+inline const int verticalTiles = 10;
+// This is how many tiles to the right of the screen the position of player is to be fixed
+inline const int playerScreenTileX = 7;
+inline const sf::Vector2i desktop = { 1920, 1080 };
+
 typedef sf::RenderWindow rw;
 typedef sf::Sprite Sprt;
 typedef sf::Texture Txt;

@@ -1,4 +1,7 @@
-#include "global.h"
-sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-float GlobalData::tilesize = static_cast<float>(desktop.size.y/ 10.f);
-
+//#include "global.h"
+//float tilesize = 1080 / 10.f;
+//const int horizontalTiles = 16;
+//const int verticalTiles = 10;
+//// This is how many tiles to the right of the screen the position of player is to be fixed
+//const int playerScreenTileX = 7;
+//const sf::Vector2i desktop = { 1920, 1080 };

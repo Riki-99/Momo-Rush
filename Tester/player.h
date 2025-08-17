@@ -31,7 +31,7 @@ public:
         floatrect righttilehbox = tile_to_right.getHitBox();
         floatrect currenttilehbox = this_tile.getHitBox();
         // l
-        if ((hitbox.findIntersection(downtilehbox) && tile_below.trap) || (hitbox.findIntersection(lefttilehbox) && tile_to_left.trap) || (hitbox.findIntersection(righttilehbox) && tile_to_right.trap))
+        if ((hitbox.findIntersection(currenttilehbox) && this_tile.trap))
         {
             dead = true;
         }

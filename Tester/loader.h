@@ -68,7 +68,7 @@ private:
 public:
     Background(int index) : sprite(TextureList<Background>::getTexture(index)) {
         vec2f localBounds = sprite.getLocalBounds().size;
-        sprite.setScale({ desktop.size.x / localBounds.x, desktop.size.y / localBounds.y });
+        sprite.setScale({ desktop.x / localBounds.x, desktop.y / localBounds.y });
     }
     void draw(rw& window) {
         window.draw(sprite);
