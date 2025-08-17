@@ -15,12 +15,10 @@ int main(void)
 	Background b1(0);
 	Background b2(1);
 	Background b3(2);
-	Player p(0, 0, 0, 1, 1, 56);
+	Player p(0, 0, 0, 56, 56);
+	Map::generate(10000);
 	Map m1("./Assets/newmap.txt");
-
 	p.move({ static_cast<float>(gd::tilesize * 12) , 0.f}, m1);
-		
-	//Map m1("./Assets/map1.txt");
 	while (window.isOpen())
 	{
 		while (std::optional event = window.pollEvent())

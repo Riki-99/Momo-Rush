@@ -32,8 +32,10 @@ void loadAllTextures();
 struct imageData {
     int xCoords;
     int yCoords;
-    int size;
-    imageData(int xIdx, int yIdx, int siz) : xCoords(xIdx* siz), yCoords(yIdx* siz), size(siz) {}
+    int sizeX;
+    int sizeY;
+    imageData(int xIdx, int yIdx, int siz1, int siz2) : xCoords(xIdx* siz1), yCoords(yIdx* siz2), sizeX(siz1), sizeY(siz2) {}
+    imageData() { sizeY = sizeX = yCoords = xCoords = 0; }
 };
 // A class that serves as blueprint for all objects that will be of the tile size.
 class Element {
@@ -42,7 +44,7 @@ protected:
     Sprt sprite;
 public:
     // Setting up the cons  tructor, no default constructor;
-    Element(int index, int xthIdx, int ythIdx, int width, int height, int size, Txt& ref);
+    Element(int index, int xthIdx, int ythIdx, int width, int height, Txt& ref);
 
     // Set position using absolute value
     void setPosition(vec2f position);

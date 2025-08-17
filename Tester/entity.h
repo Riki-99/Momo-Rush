@@ -36,7 +36,7 @@ public:
     vec2i blockToRight();
 
     // Adds image data to the ImageData class which then creates an int rect that can be used to crop out individual sprites from the sprite sheet
-    void addImgData(int idx, int frameCol, int frameRow, int s);
+    void addImgData(int idx, int frameCol, int frameRow, int sX, int sY);
 
     void animate();
 };

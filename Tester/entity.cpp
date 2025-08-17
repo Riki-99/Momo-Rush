@@ -2,7 +2,7 @@
 #include "entity.h"
 #include "map.h"
 
-Entity::Entity(int totalFramesPerAction, int frameSize) : Element(0, 0, 0, 0, 0, frameSize, tiletxtr) {
+Entity::Entity(int totalFramesPerAction, int frameSize) : Element(0, 0, 0, frameSize, frameSize, tiletxtr) {
     velocity = { 0,0 };
     acc = { 0.f,0.f };
     grounded = false;
@@ -16,10 +16,10 @@ Entity::Entity(int totalFramesPerAction, int frameSize) : Element(0, 0, 0, 0, 0,
 
     // populate idle (row 0) and running (row 1)
     for (int f = 0; f < totalFramesPerAction; ++f) {
-        addImgData(static_cast<int>(idle), f, 0, frameSize);
+        addImgData(static_cast<int>(idle), f, 0, frameSize, frameSize);
     }
     for (int f = 0; f < totalFramesPerAction; ++f) {
-        addImgData(static_cast<int>(running), f, 2, frameSize);
+        addImgData(static_cast<int>(running), f, 2, frameSize, frameSize);
     }
 
     clk.restart();
@@ -29,8 +29,8 @@ void Entity::move(vec2f displacement, Map& m)
 {
     currentState = idle;
     // compute which tiles we're testing against
-    vec2i leftBlock = blockToLeft();   // {x, y}
-    vec2i rightBlock = blockToRight(); // {x, y}
+    vec2i leftBlock = blockToLeft();   // {x-1, y}
+    vec2i rightBlock = blockToRight(); // {x+1, y}
     vec2i downBlock = standingOn();    // {x, y+1}
 
     // Move to left if the tile to left is not solid and in bounds
@@ -97,12 +97,12 @@ vec2i Entity::blockToRight() {
     return { static_cast<int>(std::ceil((hitbox.position.x - hitbox.size.x / 3) / gd::tilesize)), static_cast<int>(std::floor(hitbox.position.y / gd::tilesize)) };
 }
 
-void Entity::addImgData(int idx, int frameCol, int frameRow, int s) {
+void Entity::addImgData(int idx, int frameCol, int frameRow, int sX, int sY) {
     if (idx < 0) return;
     if (imgData.size() <= idx) {
         imgData.resize(idx + 1);
     }
-    imgData[idx].push_back(imageData(frameCol, frameRow, s));
+    imgData[idx].push_back(imageData(frameCol, frameRow, sX, sY));
 }
 
 void Entity::animate() {
@@ -118,7 +118,7 @@ void Entity::animate() {
             currentFrame = 0;
         }
         imageData& imdata = imgData[stateIdx][currentFrame];
-        sprite.setTextureRect(intrect({ imdata.xCoords, imdata.yCoords }, { imdata.size, imdata.size }));
+        sprite.setTextureRect(intrect({ imdata.xCoords, imdata.yCoords }, { imdata.sizeX, imdata.sizeY }));
         clk.restart();
     }
 }

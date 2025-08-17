@@ -4,9 +4,9 @@
 #include "map.h"
 class Player : public Entity {
 private:
-    const float jumpHeight = 0.9f;
+    const float jumpHeight = 1.f;
 public:
-    Player(int i, int x, int y, int w, int h, int s);
+    Player(int i, int x, int y, int w, int h);
     // Updates the entity
     void update(Map& m);
 

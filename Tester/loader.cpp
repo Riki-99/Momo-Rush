@@ -1,6 +1,7 @@
 #include "loader.h"
 #include "player.h"
 #include "map.h"
+#include "traps.h"
 
 Txt tiletxtr("./Assets/oak-resources/oak_woods_tileset.png");
 void loadAllTextures() {
@@ -10,6 +11,10 @@ void loadAllTextures() {
 	TextureList<Player>::addTexture("./Assets/character-resources/png/blue/char_blue_1.png");
 	TextureList<Enemy>::addTexture("./Assets/character-resources/png/red/char_red_1.png");
 	TextureList<Tile>::addTexture("./Assets/oak-resources/oak_woods_tileset.png");
+	TextureList<bearTrap>::addTexture("./Assets/traps/bear_trap.png");
+	TextureList<fireTrap>::addTexture("./Assets/traps/fire_trap.png");
+	TextureList<pitTrap>::addTexture("./Assets/traps/pit_trap.png");
+	TextureList<spikeTrap>::addTexture("./Assets/traps/spike_trap.png");
 
 	/*standardTiles.push_back(Tile(0, 4, 0, 1, 1, 24));
 	standardTiles.push_back(Tile(0, 12, 0, 1, 1, 24));
@@ -18,12 +23,12 @@ void loadAllTextures() {
 	standardTiles.push_back(Tile(0, 0, 11, 1, 1, 24));*/
 }
 
-    Element::Element(int index, int xthIdx, int ythIdx, int width, int height, int size, Txt& ref) : sprite(ref) {
+    Element::Element(int index, int xthIdx, int ythIdx, int width, int height, Txt& ref) : sprite(ref) {
         sprite.setTextureRect(intrect(
-            { xthIdx * size, ythIdx * size },
-            { size * width, size * height }
+            { xthIdx * width, ythIdx * height },
+            {  width, height }
         ));
-        sprite.setScale({ static_cast<float>(gd::tilesize / size), static_cast<float>(gd::tilesize / size) });
+        sprite.setScale({ static_cast<float>(gd::tilesize / width), static_cast<float>(gd::tilesize / height) });
         hitbox = sprite.getGlobalBounds();
     }
     // Set position using absolute value

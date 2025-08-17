@@ -1,9 +1,9 @@
 #include "player.h";
 #include "map.h";
 
-Player::Player(int i, int x, int y, int w, int h, int s) : Element(i, x, y, w, h, s, TextureList<Player>::getTexture(i)), Entity(6, 56) {
+Player::Player(int i, int x, int y, int w, int h) : Element(i, x, y, w, h, TextureList<Player>::getTexture(i)), Entity(6, 56) {
     health = 10;
-    movementSpeed = 1;
+    movementSpeed = 1.2;
 }
 
 

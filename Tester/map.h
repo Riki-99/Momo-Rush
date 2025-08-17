@@ -2,14 +2,66 @@
 #include "global.h"
 #include "loader.h"
 
-class Tile : public Element
+class Tile : virtual public Element
 {
+protected:
+    int frameCt;
+    const float frameDuration = 0.1f;
+    int currentFrameIdx;
+    Clock clk;
+    int width, height;
+    vector <imageData> imgData;
 public:
     // Index of the tile used.
     int index;
+    // Whether the tile is solid or not
     bool solid;
-    Tile(int i, int x, int y, int w, int h, int s, int c) : Element(i, x, y, w, h, s, TextureList<Tile>::getTexture(i)) { index = c; solid = bool(index); }
-    Tile() : Element(0, 0, 0, 0, 0, 0, tiletxtr) { index = 0; solid = bool(index); }
+    Tile(int i, int x, int y, int w, int h, int c, int fct) : Element(i, x, y, w, h, TextureList<Tile>::getTexture(i)) {
+        width = w;
+        height = h;
+        index = c; 
+        solid = bool(index); 
+        frameCt = fct;
+        currentFrameIdx = 0;
+        if (frameCt>=2)
+        {
+            cout << "All good" << endl;
+            frameCt = fct;
+            imgData.resize(fct);
+            for (int i = 0; i < fct; i++)
+            {
+                imgData[i] = (imageData(i, 0, width, height));
+            }
+            clk.restart();
+            cout << "All good 2" << endl;
+        }
+    }
+    Tile() : Element(0, 0, 0, 0, 0, tiletxtr) { index = 0; solid = bool(index); frameCt = 0; currentFrameIdx = 0;}
+    void animate() {
+        if (frameCt < 2) return;  // no frames to animate
+
+        float timePassed = clk.getElapsedTime().asSeconds();
+        if (timePassed >= frameDuration)
+        {
+            currentFrameIdx++;
+            if (currentFrameIdx >= frameCt) {
+                currentFrameIdx = 0;
+            }
+            imageData tmp = imgData[currentFrameIdx];
+            intrect f = { { tmp.xCoords, tmp.yCoords }, { tmp.sizeX, tmp.sizeY } };
+            sprite.setTextureRect(f);
+            clk.restart();
+        }
+    }
+
+    void draw(rw &window, float offset) {
+        if (frameCt >= 2)
+        {
+            animate();
+        }
+        Element::draw(window, offset);
+    }
+
 };
 
 class Map
