@@ -1,12 +1,14 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include "loader.h"
 #include "global.h"
+#include "loader.h"
+#include "map.h"
+#include "entity.h"
+#include "player.h"
 
 int main(void)
 {
-	// Obtaining dimensions of the desktop
-	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+	// Obtaining dimensions of the desktop, defined in global.cpp
 	sf::RenderWindow window(desktop, "Momo Rush");
 	loadAllTextures();
 	int counter = 0;
@@ -14,8 +16,9 @@ int main(void)
 	Background b2(1);
 	Background b3(2);
 	Player p(0, 0, 0, 1, 1, 56);
-	p.sprite.move({ static_cast<float>(gd::tilesize * 12) , 0.f});
-		Map m1("./Assets/newmap.txt");
+	Map m1("./Assets/newmap.txt");
+
+	p.move({ static_cast<float>(gd::tilesize * 12) , 0.f}, m1);
 		
 	//Map m1("./Assets/map1.txt");
 	while (window.isOpen())
