@@ -68,7 +68,6 @@ public:
 
 extern Txt tiletxtr;
 
-
 class Background {
 private:
     Sprt sprite;

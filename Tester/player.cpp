@@ -84,18 +84,16 @@ void Player::draw(rw& window) {
 void Player::checkCollisionWithObstacle(Map& m, game& g)
 {
     vec2i block_below = standingOn();
-    // Check a small neighborhood of tiles around the player
+
+    // check 3x3 neighborhood but only react to index == 4 there
     for (int dy = -1; dy <= 1; ++dy) {
         for (int dx = -1; dx <= 1; ++dx) {
             Tile& tile = m.getTile(block_below.y + dy, block_below.x + dx);
-            floatrect tilehbox = tile.getHitBox();
+            if (tile.index != 4) continue;
 
+            floatrect tilehbox = tile.getHitBox();
             if (hitbox.findIntersection(tilehbox)) {
-                if (tile.trap) {
-                    dead = true;
-                    return; // stop as soon as player dies
-                }
-                else if (tile.index == 4 && !tile.consumed) {
+                if (!tile.consumed) {
                     tile.consumed = true;
                     g.incrementScore();
                     sf::Sound(s2).play();
@@ -103,4 +101,20 @@ void Player::checkCollisionWithObstacle(Map& m, game& g)
             }
         }
     }
+
+    // check only the current tile for traps and any other collisions
+    Tile& current = m.getTile(block_below.y, block_below.x);
+    floatrect currenthbox = current.getHitBox();
+    if (hitbox.findIntersection(currenthbox)) {
+        if (current.trap) {
+            dead = true;
+            return;
+        }
+        else if (current.index == 4 && !current.consumed) {
+            current.consumed = true;
+            g.incrementScore();
+            sf::Sound(s2).play();
+        }
+    }
 }
+
